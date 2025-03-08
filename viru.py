@@ -69,7 +69,7 @@ def force_focus():
 force_focus()  # 啟動焦點強化
 # 建立close按鈕(測試時用 正式板時沒有)
 btn = tk.Button(root, text='close',command=destroy)
-btn.place(x=100,y=500)# 加入視窗中
+#btn.place(x=100,y=500)# 加入視窗中
 btn.lift()
 #圖片
 # 讀取圖片
